@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+
+    <!--注解扫描-->
+    <context:component-scan base-package="cn.jc" />
+
+    <!--加载配置文件-->
+    <context:property-placeholder location="classpath:jdbc.properties"/>
+    <!--配置数据连接池-->
+    <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource">
+        <property name="url" value="${jdbc.url}"/>
+        <property name="username" value="${jdbc.username}" />
+        <property name="password" value="${jdbc.password}" />
+    </bean>
+
+
+    <!--sqlSessionFactroy的创建交由spring-->
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <!--注入数据源-->
+        <property name="dataSource" ref="dataSource" />
+        <!--把映射文件交由spring进行管理-->
+        <property name="mapperLocations" value="classpath:mapper/*Mapper.xml" />
+    </bean>
+    <!-- mapper的动态代理模板-->
+    <bean id="mapperScannerConfigurer" class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <!--传入工厂-->
+        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"/>
+        <!--扫描包哪些包下的接口-->
+        <property name="basePackage" value="cn.jc.dao"/>
+    </bean>
+    <!--事务管理器-->
+    <bean id="txManager"   class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+    <!-- 配置注解的事务AOP -->
+    <!--aop的代理-->
+    <aop:aspectj-autoproxy/>
+    <!--注解驱动, 事务-->
+    <tx:annotation-driven transaction-manager="txManager"/>
+
+
+</beans>

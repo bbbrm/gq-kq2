@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.jc.dao.EmployeesDao">
+    <resultMap id="EmployeesMap" type="cn.jc.entity.Employees">
+        <id column="id" property="id"/>
+        <result column="emp_umber" property="emp_umber"/>
+        <result column="emp_name" property="emp_name"/>
+        <result column="sex" property="sex"/>
+        <result column="age" property="age"/>
+        <result column="nation" property="nation"/>
+        <result column="identity_card" property="identity_card"/>
+        <result column="pay" property="pay"/>
+        <result column="phone" property="phone"/>
+        <result column="eme_contact" property="eme_contact"/>
+        <result column="eme_phone" property="eme_phone"/>
+        <result column="post_id" property="post_id"/>
+        <result column="personal_profile" property="personal_profile"/>
+
+    </resultMap>
+
+    <!--返回的结果如果是一个对象(pojo,entity)要写清楚它的全路径-->
+    <select id="listEmployees"  resultMap="EmployeesMap">
+        SELECT * FROM  employees
+        <where>
+
+            <if test="emp_name != null and emp_name != ''">
+                and name like '%${emp_name}%'
+            </if>
+        </where>
+        limit #{currentPage},#{limit}
+    </select>
+
+    <select id="getCountTotal" resultType="java.lang.Integer" parameterType="java.lang.String">
+        select count(1) from employees
+        where name like '%${emp_name}%'
+
+    </select>
+
+    <select id="findById" parameterType="java.lang.Integer" resultMap="EmployeesMap">
+        select * from employees where id=#{id}
+    </select>
+
+    <insert id="insertEmployees" parameterType="cn.jc.entity.Employees">
+        insert into employees(id,emp_umber,emp_name, sex,age,nation,identity_card, pay,phone,eme_contact,eme_phone, post_id,personal_profile)
+        value(#{id},#{emp_umber},#{emp_name},#{sex},#{age},#{nation},#{identity_card},#{pay},#{phone},#{eme_contact},#{eme_phone},#{post_id},#{personal_profile})
+    </insert>
+
+    <update id="updateEmployees" parameterType="cn.jc.entity.Employees">
+        update employees set emp_umber=#{emp_umber},emp_name=#{emp_name}, sex=#{sex}, age=#{age}, nation=#{nation}, identity_card=#{identity_card}, pay=#{pay}, phone=#{phone}, eme_contact=#{eme_contact}, eme_phone=#{eme_phone}, post_id=#{post_id}, personal_profile=#{personal_profile}
+        where id=#{id}
+    </update>
+
+    <delete id="deleteEmployees" parameterType="cn.jc.entity.Employees">
+        delete from employees where id=#{1}
+    </delete>
+
+
+</mapper>

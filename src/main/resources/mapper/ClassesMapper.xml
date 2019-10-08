@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.jc.dao.ClassesDao">
+
+    <resultMap id="ClassesMap" type="cn.jc.entity.Classes">
+        <id column="id" property="id"/>
+        <result column="staff_code" property="staffCode"/>
+        <result column="designation" property="designation"/>
+        <result column="morning_shift" property="morningShift"/>
+        <result column="afternoon_time" property="afternoonTime"/>
+        <result column="remark" property="remark"/>
+    </resultMap>
+
+    <select id="listClasses"  resultMap="ClassesMap">
+        SELECT * FROM  classes
+        <where>
+
+            <if test="name != null and name != ''">
+                and designation like '%${name}%'
+            </if>
+        </where>
+        limit #{currentPage},#{limit}
+    </select>
+
+
+    <select id="getCountTotal" resultType="java.lang.Integer" parameterType="java.lang.String">
+        select count(1) from classes
+        where designation like '%${name}%'
+
+    </select>
+
+    <select id="findById" parameterType="java.lang.Integer" resultMap="ClassesMap">
+        select * from classes where id=#{id}
+    </select>
+
+
+    <insert id="insertClasses" parameterType="cn.jc.entity.Classes">
+        insert into classes(id,staff_code,designation,morning_shift,afternoon_time,remark)
+        value(#{id},#{staffCode},#{designation},#{morningShift},#{agafternoonTimee},#{remark})
+    </insert>
+
+    <update id="updateClasses" parameterType="cn.jc.entity.Classes">
+        update classes set staff_code=#{staffCode},designation=#{designation}, morning_shift=#{morningShift}, afternoon_time=#{agafternoonTimee}, remark=#{remark}
+        where id=#{id}
+    </update>
+
+
+    <delete id="deleteClasses" parameterType="cn.jc.entity.Classes">
+        delete from classes where id=#{1}
+    </delete>
+
+</mapper>

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.jc.dao.DepartmentDao">
+
+    <resultMap id="DepartmentMap" type="cn.jc.entity.Department">
+        <id column="id" property="id"/>
+        <result column="staff_code" property="staffCode"/>
+        <result column="industry_title" property="industryTitle"/>
+        <result column="department_head" property="departmentHead"/>
+        <result column="responsibility" property="responsibility"/>
+        <result column="superior" property="superior"/>
+        <result column="remark" property="remark"/>
+    </resultMap>
+
+
+    <!--返回的结果如果是一个对象(pojo,entity)要写清楚它的全路径-->
+    <select id="listDepartment"  resultMap="DepartmentMap">
+        SELECT * FROM  department
+        <where>
+
+            <if test="name != null and name != ''">
+                and industry_title like '%${name}%'
+            </if>
+        </where>
+        limit #{currentPage},#{limit}
+    </select>
+
+    <select id="getCountTotal" resultType="java.lang.Integer" parameterType="java.lang.String">
+        select count(1) from department
+        where industry_title like '%${name}%'
+
+    </select>
+
+    <select id="findById" parameterType="java.lang.Integer" resultMap="DepartmentMap">
+        select * from department where id=#{id}
+    </select>
+
+    <insert id="insertDepartment" parameterType="com.jc.entity.Department">
+        insert into department(id,staff_code,industry_title,department_head,responsibility,superior,remark)
+        value(#{id},#{staffCode},#{industryTitle},#{departmentHead},#{responsibility},#{superior},#{remark})
+    </insert>
+
+    <update id="updateDepartment" parameterType="com.jc.entity.Department">
+        update department set staff_code=#{staffCode},industry_title=#{industryTitle}, department_head=#{departmentHead}, responsibility=#{responsibility}, superior=#{superior}, remark=#{remark}
+        where id=#{id}
+    </update>
+
+    <delete id="deleteDepartment" parameterType="com.jc.entity.Department">
+        delete from department where id=#{1}
+    </delete>
+
+
+</mapper>
